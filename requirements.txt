@@ -1,5 +1,4 @@
 aiogrpc==1.8
-anki-vector==0.6.0
 annotated-types==0.6.0
 anyio==4.3.0
 arrow==1.3.0
@@ -76,4 +75,5 @@ watchdog==4.0.0
 watchfiles==0.21.0
 websockets==12.0
 Werkzeug==3.0.3
+wirepod_vector_sdk==0.8.1
 wsproto==1.2.0

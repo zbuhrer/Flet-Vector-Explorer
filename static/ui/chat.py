@@ -32,11 +32,10 @@ class Chat(ft.Column):
         self.text_field.disabled = True
         self.submit_button.disabled = True
         self.update()
-        serial = self.serial
         chatter = Chatter()
 
         try: 
-            await chatter.talk(serial, text)
+            chatter.talk(text)
             self.messages_widget.controls.append(ft.Text(text))
             self.update()
         except asyncio.TimeoutError as e:

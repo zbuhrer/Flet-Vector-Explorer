@@ -1,7 +1,8 @@
 import argparse
 import asyncio
 
-from anki_vector import Robot
+from anki_vector import Robot as R
+from anki_vector import AsyncRobot as AR
 
 ANKI_ROBOT_SERIAL = '00702f96'
 
@@ -9,7 +10,7 @@ currentbot = None
 currentbot_name = ''
 currentbot_serial = ANKI_ROBOT_SERIAL
 
-class Chatter(Robot):
+class Chatter(R):
     def __init__(self): 
         self.serial = currentbot_serial
         self._robot = None
@@ -24,8 +25,8 @@ class Chatter(Robot):
         self._is_thinking = False
         self._is_sleeping = False
 
-    async def talk(self, serial=currentbot_serial, text: str = "") -> None: 
-        with Robot(serial) as r:
+    def talk(self, text: str = "") -> None: 
+        with R(self.serial) as r:
             print(f"Say '{text}'...")
             r.behavior.say_text(text)
 
@@ -41,9 +42,9 @@ def main ():
             user_input = input("(q to quit) >: ")
             if user_input.lower() == 'q':
                 break
-            asyncio.run(chatter.talk(text = user_input))
+            chatter.talk(text = user_input)
     else: 
-        asyncio.run(chatter.talk(args.text))
+        chatter.talk(args.text)
 
 if __name__ == "__main__": 
     main()
