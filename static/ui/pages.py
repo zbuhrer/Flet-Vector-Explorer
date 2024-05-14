@@ -16,42 +16,6 @@ currentbot = None
 currentbot_name = ''
 currentbot_serial = ANKI_ROBOT_SERIAL
 
-
-
-
-class Status(Container):
-    def __init__(self):
-        super().__init__()
-        self.contents = [
-            Text("Status Placeholder"),
-        ]
-
-class Settings(Container):
-    def __init__(self):
-        super().__init__()
-        self.contents = [Text("Settings Placeholder")]
-
-class StatusItem(Control):
-    def __init__(self, text: str, icon: Icon):
-        super().__init__()
-        self.controls = [icon, Text(text)]
-
-class Indicator(Column):
-    def __init__(self):
-        super().__init__()
-        self.controls = []
-
-    def add_item(self, text: str, method: Callable[[], bool]) -> None:
-        icon = Icon(name='check_circle', color='green' if method() else 'red')
-        self.controls.append(StatusItem(text, icon))
-
-class StatusIndicator(Chatter):
-    async def main(self):
-        indicator = Indicator()
-        indicator.add_item("Status 01", lambda: True)
-        indicator.add_item("Status 02", lambda: True)
-        indicator.add_item("Status 03", lambda: True)
-
 class Chat(Column):
     def __init__(self):
         super().__init__()
@@ -91,43 +55,51 @@ class Chat(Column):
         self.text_field.value = ""
         self.update()
 
-class About(Container):
-    def __init__(self):
-        super().__init__()
-        self.contents = [Text("About")]
-
 class RemoteControl(Column):
     def __init__(self):
-        super().__init__()
-        self.text_field = ft.TextField(label='Remote Control', read_only=True)
+        self.text_field=ft.TextField(value='Remote Control', read_only=True, disabled=True)
         self.initial_state = ft.Column(
-                controls=[
-                    self.text_field,
-                    ElevatedButton(text="Connect", on_click=_connect),
-                ])
-        
-        self.connected_state = ft.Column(
             controls=[
                 self.text_field,
-                ElevatedButton(text="Disconnect", on_click=_disconnect)
-            ]
-        )
+                ElevatedButton(text="Connect", on_click=_connect)])
         self.controls = [self.initial_state]
+
+
+    def update_state(self, state):
+        self.text_field=ft.TextField(value='Remote Control', read_only=True, disabled=True)
+        connecting_state = ft.Column(
+            controls=[
+                self.text_field,
+                ElevatedButton(text="Connect", on_click=_connect, disabled=True),
+                ft.ProgressRing()])
+        connected_state = ft.Column(
+            controls=[
+                self.text_field,
+                ElevatedButton(text="Disconnect", on_click=_disconnect, disabled=False)])
+
+        if state == "connecting":
+            self.controls = [connecting_state]
+        if state == "connected":
+            self.controls = [connected_state]
+        else:
+            RemoteControl.__init__(self)
+        return 
+        
 
 
 def _connect(self):
     print('Connecting to Vector...')
-    # connection logic
-
+    RemoteControl.update_state(self,state="connecting")
     xp.run() 
     # might need to wait until confirmation is returned 
+    # need error handling 
+    RemoteControl.update_state(self,state="connected")
+    return "connected"
 
-    # once the connection is initialized, 
-    # hit the root route, which should return 
-    # a ft.Column element with contents based on the connection to the robot
-
-    return "Connected"
-
-def _disconnect():
+def _disconnect(self):
     # disconnection logic
+    # need to craft a xp.kill() to disconnect from the bot
+
+    self.state = "initial"
+    RemoteControl.update_state(self,state="initial")
     return "Disconnected"
