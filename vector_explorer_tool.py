@@ -139,12 +139,13 @@ def run():
 
 
 if __name__ == '__main__':
+    from anki_vector import exceptions as E
     try:
         run()
     except KeyboardInterrupt as e:
         sys.exit("Program aborted: %s" % e)
-    except anki_vector.exceptions.VectorNotFoundException as e:
+    except E.VectorNotFoundException as e:
         # Test server mode without active Vector
         start_server()
-    except anki_vector.exceptions.VectorConnectionException as e:
+    except E.VectorConnectionException as e:
         sys.exit("A connection error occurred: %s" % e)
