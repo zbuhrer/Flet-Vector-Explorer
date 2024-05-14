@@ -119,9 +119,14 @@ def _connect(self):
     print('Connecting to Vector...')
     # connection logic
 
-    xp.run()
-    
-    return "Connected"        
+    xp.run() 
+    # might need to wait until confirmation is returned 
+
+    # once the connection is initialized, 
+    # hit the root route, which should return 
+    # a ft.Column element with contents based on the connection to the robot
+
+    return "Connected"
 
 def _disconnect():
     # disconnection logic
