@@ -40,9 +40,6 @@ q = queue.Queue()
 active_viewer = False
 _default_camera_image = create_default_image(640, 360)
 
-
-
-
 socketio = SocketIO(app, async_mode=async_mode)
 flask_socketio_installed = True
 
