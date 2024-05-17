@@ -57,49 +57,27 @@ class Chat(Column):
 
 class RemoteControl(Column):
     def __init__(self):
-        self.text_field=ft.TextField(value='Remote Control', read_only=True, disabled=True)
-        self.initial_state = ft.Column(
-            controls=[
-                self.text_field,
-                ElevatedButton(text="Connect", on_click=_connect)])
-        self.controls = [self.initial_state]
-
-
-    def update_state(self, state):
-        self.text_field=ft.TextField(value='Remote Control', read_only=True, disabled=True)
-        connecting_state = ft.Column(
-            controls=[
-                self.text_field,
-                ElevatedButton(text="Connect", on_click=_connect, disabled=True),
-                ft.ProgressRing()])
-        connected_state = ft.Column(
-            controls=[
-                self.text_field,
-                ElevatedButton(text="Disconnect", on_click=_disconnect, disabled=False)])
-
-        if state == "connecting":
-            self.controls = [connecting_state]
-        if state == "connected":
-            self.controls = [connected_state]
-        else:
-            RemoteControl.__init__(self)
-        return 
+        super().__init__()
+        self.connect = RemoteControl._connect
+        self.disconnect = RemoteControl._disconnect
+        self.connectbutton = ElevatedButton(text="Connect")
+        self.connectbutton.on_click='_connect'
+        self.controls=[self.connectbutton]
         
+    def _connect(self):
+        self.connectbutton.disabled=True
+        self.connectbutton.text="Connecting..."
+        self.update()
+        # connect to vector
+        xp.run() 
+        # might need to wait until confirmation is returned 
+        # need error handling 
+        self.connectbutton.text="Connected"
+        self.connectbutton.on_click=self._disconnect
+        self.connectbutton.disabled=False
+        self.update()
 
-
-def _connect(self):
-    print('Connecting to Vector...')
-    RemoteControl.update_state(self,state="connecting")
-    xp.run() 
-    # might need to wait until confirmation is returned 
-    # need error handling 
-    RemoteControl.update_state(self,state="connected")
-    return "connected"
-
-def _disconnect(self):
-    # disconnection logic
-    # need to craft a xp.kill() to disconnect from the bot
-
-    self.state = "initial"
-    RemoteControl.update_state(self,state="initial")
-    return "Disconnected"
+    def _disconnect(self):
+        # disconnection logic
+        # need to craft a xp.kill() to disconnect from the bot
+        return
