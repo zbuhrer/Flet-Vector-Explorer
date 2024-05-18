@@ -1,10 +1,11 @@
 import flet as ft
+import static.explorer as xp
+import anki_vector
 
 
 from static.ui.viewer import MainView, CameraView
 from anki_vector import Robot as R
 
-import flet as ft
 
 
 
@@ -19,6 +20,8 @@ def main(page: ft.Page):
                 ft.PopupMenuItem(text="Logs", on_click=show_logs),
                 ft.PopupMenuItem(text="Version Info", on_click=show_version_info),
             ])
+        
+
         self.controllermenu = ft.PopupMenuButton(
             icon=ft.icons.GAMEPAD,
             items=[
@@ -45,26 +48,24 @@ def main(page: ft.Page):
     def show_version_info(e):
         print("Version Info page opened!")
 
+    def _connect(e):
+        print("Connecting to Vector...")
+        xp.run()
+
+        return
+
     page.appbar = ft.AppBar(
         leading=ft.IconButton(ft.icons.VIEW_COMPACT),
         title=ft.Text("Vector Explorer"),
         center_title=False,
         bgcolor=ft.colors.SURFACE_VARIANT,
-        actions=[])
+        actions=[
+            ft.PopupMenuButton(icon=ft.icons.SIGNAL_WIFI_OFF_OUTLINED,items=[
+                ft.PopupMenuItem(text="Connect", on_click=_connect),
+                ft.PopupMenuItem(text="Connection Info", on_click=show_conninfo, disabled=True),
+            ])
+        ])
 
     page.add(ft.Text("Body!"))
 
 ft.app(target=main)
-
-
-
-def oldmain(page: ft.Page) -> None:
-    def __init__(self):
-        self.page.title = "Vector Synapse"
-
-    mv = MainView()
-    
-    page.add(mv.tabs)
-
-if __name__ == "__main__":
-    ft.app(main)
