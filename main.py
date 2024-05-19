@@ -1,33 +1,15 @@
 import flet as ft
 import json, requests
 
-
-from anki_vector import Robot as R
-
 from utils.extras import *
-
-class MainPage(ft.Container):
-  def __init__(self,switch_page):
-    super().__init__()
-    self.switch_page = switch_page    
-    self.content = ft.Column(
-      controls=[
-      ft.Text(value="Main Page confirmed working!")
-      ])
-    
-class BotListPage(ft.Container):
-  def __init__(self,switch_page):
-    super().__init__()
-    self.switch_page = switch_page    
-    self.content = ft.Column(
-      controls=[
-      ft.Text(value="Bot List Page confirmed working!")
-      ])
+from pages.sdk_index import MainPage, BotListPage
+from pages.remote_control import RemoteControlPage
 
 class App(ft.UserControl):
     def __init__(self,pg:ft.Page):
         super().__init__()
-        pg.window_title_bar_buttons_hidden = False
+        pg.window_title_bar_buttons_hidden = True
+        pg.window_frameless = True
         pg.window_width = base_width
         pg.window_height = base_height
         pg.appbar = ft.AppBar(
@@ -40,7 +22,7 @@ class App(ft.UserControl):
                 icon=ft.icons.GAMEPAD,
                 items=[
                     ft.PopupMenuItem(text="Connection Info"),
-                    ft.PopupMenuItem(text="Remote Controller")
+                    ft.PopupMenuItem(text="Remote Controller", data='remote_control', on_click=self.switch_page)
                 ]),
                 ft.PopupMenuButton(icon=ft.icons.SIGNAL_WIFI_OFF_OUTLINED,items=[
                     ft.PopupMenuItem(text="Connect"),
@@ -60,6 +42,8 @@ class App(ft.UserControl):
         self.pg = pg
         self.main_page = MainPage(self.switch_page)
         self.botlist_page = BotListPage(self.switch_page)
+        self.remotecontrol_page = RemoteControlPage(self.switch_page)
+        
         self.screen_views = ft.Stack(
             expand=True,
             controls=[self.main_page])
@@ -90,20 +74,13 @@ class App(ft.UserControl):
             self.screen_views.controls.append(self.main_page)
             self.screen_views.update()
             return
-    
-    def _botlist(self, e):
-        response = requests.get('https://localhost:5000/api-sdk/get_sdk_info')
+        elif e.control.data == 'remote_control':
+            print("Loading Remote Control Page")
+            self.screen_views.controls.clear()
+            self.screen_views.controls.append(self.remotecontrol_page)
+            self.screen_views.update()
+            return
 
-        if response.status_code == 200:
-            json_response = json.loads(response.text)
-
-            for bot in json_response["robots"]:
-                print(f"Bot: {bot['esn']}")
-                ft.Text(f"Bot: {bot['esn']}")
-        else:
-            ft.Text("Error authenticating!")
-
-        return
     
     def init_helper(self):
         self.pg.add(self.screen_views)
