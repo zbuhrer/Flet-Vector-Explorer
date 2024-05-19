@@ -12,8 +12,10 @@ class CameraView(Page):
         on_web_resource_error= lambda e: print("Web Resource Error:", e.data)
     )
 
-class MainView(Page):
-    def __init__(self):
+class MainView(Container):
+    def __init__(self, switch_page):
+        super().__init__()
+        self.switch_page = switch_page
 
         # Tab content 
         self.chat_content = Container(Chat(),padding=10)

@@ -1,4 +1,5 @@
-from flask import Flask, request
+from crypt import methods
+from flask import Flask, request, render_template
 
 from static.vector_talk import Chatter
 
@@ -15,8 +16,8 @@ import flet as ft
 import anki_vector as av
 from anki_vector import Robot as R
 from anki_vector import util
-from flask import Flask
-from flask_socketio import SocketIO
+from flask import Flask, Blueprint
+from flask_socketio import SocketIO, emit
 
 from lib.event_monitor import monitor
 from lib import new_flask_socket_helpers as flask_socket_helpers
@@ -24,6 +25,17 @@ from lib.animate import animate, init_animate
 from lib.viewer import viewer, activate_viewer_if_enabled, create_default_image, update_state_info
 from lib.remote_control import remote_control, activate_controls
 
+
+# javascript_blueprint = Blueprint('javascript', __name__, template_folder='templates')
+
+# @javascript_blueprint.route('/javascript', methods=['GET', 'POST'])
+# def execute_javascript():
+#     if request.method == 'POST':
+#         data = request.get_json()
+#         # execute logic 
+#         return {'result': 'ok'}
+#     else:
+#         return {'result': 'error'}
 
 app = Flask(__name__)
 app.register_blueprint(animate)
