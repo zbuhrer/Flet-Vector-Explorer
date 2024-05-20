@@ -12,32 +12,31 @@ class App(ft.UserControl):
         pg.window_frameless = True
         pg.window_width = base_width
         pg.window_height = base_height
+        
+        self.connect_menu = ft.PopupMenuButton(icon=ft.icons.SIGNAL_WIFI_OFF_OUTLINED,
+                    items=[
+                                                   ft.PopupMenuItem(text="Connect")])
+        self.settings_menu = ft.PopupMenuButton(icon=ft.icons.SETTINGS,
+                    items=[
+                        ft.PopupMenuItem(text="Server Settings"),
+                        ft.PopupMenuItem(text="Bot List", data='botlist', on_click=self.switch_page),
+                        ft.PopupMenuItem(text="Current Bot Settings"),
+                        ft.PopupMenuItem(text="Custom Intents"),
+                        ft.PopupMenuItem(text="Logs"),
+                        ft.PopupMenuItem(text="Version Info")])
+        self.remotecontrol_menu =ft.PopupMenuButton(icon=ft.icons.GAMEPAD,
+                    items=[
+                        ft.PopupMenuItem(text="Connection Info"),
+                        ft.PopupMenuItem(text="Remote Controller", data='remote_control', on_click=self.switch_page)
+                            ])
+
         pg.appbar = ft.AppBar(
-            leading=ft.IconButton(ft.icons.VIEW_COMPACT, data='main_page', on_click=self.switch_page),
+            leading=ft.IconButton(ft.icons.FORKLIFT, data='main_page', on_click=self.switch_page),
             title=ft.Text("Vector Explorer"),
             center_title=False,
             bgcolor=ft.colors.SURFACE_VARIANT,
-            actions=[
-                ft.PopupMenuButton(
-                icon=ft.icons.GAMEPAD,
-                items=[
-                    ft.PopupMenuItem(text="Connection Info"),
-                    ft.PopupMenuItem(text="Remote Controller", data='remote_control', on_click=self.switch_page)
-                ]),
-                ft.PopupMenuButton(icon=ft.icons.SIGNAL_WIFI_OFF_OUTLINED,items=[
-                    ft.PopupMenuItem(text="Connect"),
-                    ft.PopupMenuItem(text="Bot List", data='botlist', on_click=self.switch_page),
-                ]),
-                ft.PopupMenuButton(
-                icon=ft.icons.MORE_HORIZ,
-                items=[
-                    ft.PopupMenuItem(text="Server Settings"),
-                    ft.PopupMenuItem(text="Bot Settings"),
-                    ft.PopupMenuItem(text="Custom Intents"),
-                    ft.PopupMenuItem(text="Logs"),
-                    ft.PopupMenuItem(text="Version Info"),
-                ]),
-            ])
+            actions=[self.remotecontrol_menu,self.connect_menu,self.settings_menu])
+                
 
         self.pg = pg
         self.main_page = MainPage(self.switch_page)
