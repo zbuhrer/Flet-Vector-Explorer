@@ -46,25 +46,28 @@ class WeatherAPI(ft.UserControl):
         self.weather_provider = ft.Container(
             content=
                 ft.Dropdown(
-                    icon=ft.icons.CLOUD,
-                    hint_text='Select a Weather API Provider to configure',
+                    hint_text='Weather API Providers',
                     options=[
-                        ft.dropdown.Option("None"),
+                        ft.dropdown.Option("None", data='none'),
                         ft.dropdown.Option("OpenWeatherMap", data='owm'),
                         ft.dropdown.Option("WeatherAPI", data='weatherapi'),
                         ]
                     ))
-        self.settings_form = self.weather_provider
+        self.weather_provider_details = ft.Column(controls=[ft.Text(value="")])
+        self.settings_form = ft.Column(
+            controls=[
+                self.weather_provider,
+                self.weather_provider_details])
         self.controls=[self.settings_form]
     
     def update_page(self,e):
         if e.control.data=='owm':
             self.settings_form.clean()
-            self.settings_form.content = self.weatherapi_form
+            self.settings_form.controls = [self.weatherapi_form]
             return
         elif e.control.data=='weatherapi':
             self.settings_form.clean()
-            self.settings_form.content = self.openweathermap_form
+            self.settings_form.controls = [self.openweathermap_form]
             self.update()
             return
 
